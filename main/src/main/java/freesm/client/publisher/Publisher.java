@@ -33,6 +33,10 @@ public class Publisher {
 		return tid;
 	}
 	
+	public Publisher(String accountMnemonic) {
+		this(accountMnemonic, "127.0.0.1:65014", "dbb134f8cffa1b2dfac5af493e6487f1b2a8a05af6489191684d79cfb9467891");
+	}
+	
 	public Publisher(String accountMnemonic, String algodApiAddr, String algodApiToken) {
 		account = Account.loadAccount(accountMnemonic);
 		api = new AlgodClientApi(algodApiAddr, algodApiToken);

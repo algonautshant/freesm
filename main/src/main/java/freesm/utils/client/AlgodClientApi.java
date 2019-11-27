@@ -16,11 +16,10 @@ import com.algorand.algosdk.transaction.Transaction;
 import com.algorand.algosdk.util.Encoder;
 
 public class AlgodClientApi {
-	private AlgodClient algodClient;
 	private AlgodApi algodApiInstance;
 	
 	public AlgodClientApi(String algodApiAddr, String algodApiToken) {
-		algodClient = new AlgodClient();
+		AlgodClient algodClient = new AlgodClient();
 		
         if (algodApiAddr.indexOf("//") == -1) {
         	algodApiAddr = "http://" + algodApiAddr;
@@ -75,9 +74,20 @@ public class AlgodClientApi {
 			id = algodApiInstance.rawTransaction(encodedTxBytes);
 		} catch (ApiException e) {
 			e.printStackTrace();
-			throw new RuntimeException("Failed to submit raw transaction");
+			throw new RuntimeException("Failed to submit raw transaction.");
 		}
         return id;
 	}
+	
+	public NodeStatus getNodeStatus() {
+		try {
+			return algodApiInstance.getStatus();
+		} catch (ApiException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to get node status.");
+		}
+	}
+	
+	
 
 }

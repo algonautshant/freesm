@@ -1,6 +1,6 @@
 package freesm.utils.events;
 
-public interface NodeListener {
+public interface NodeEventListener {
 	
 	public void onRegisterRequest();
 	
