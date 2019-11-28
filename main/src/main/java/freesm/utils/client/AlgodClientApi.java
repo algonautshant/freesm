@@ -6,6 +6,8 @@ import com.algorand.algosdk.algod.client.AlgodClient;
 import com.algorand.algosdk.algod.client.ApiException;
 import com.algorand.algosdk.algod.client.api.AlgodApi;
 import com.algorand.algosdk.algod.client.auth.ApiKeyAuth;
+import com.algorand.algosdk.algod.client.model.Account;
+import com.algorand.algosdk.algod.client.model.Block;
 import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.algod.client.model.TransactionParams;
@@ -88,6 +90,21 @@ public class AlgodClientApi {
 		}
 	}
 	
+	public Block getBlock(long round) {
+		try {
+			return algodApiInstance.getBlock(BigInteger.valueOf(round));
+		} catch (ApiException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to get block: " + round);
+		}
+	}
 	
-
+	public Account getAccountInformation(String address) {
+		try {
+			return algodApiInstance.accountInformation(address);
+		} catch (ApiException e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to get account information.");
+		}
+	}
 }

@@ -19,8 +19,7 @@ public class TransactionListener extends Thread {
 	private volatile boolean stop;
 	private NodeStatus status;
 	private AlgodClientApi api;
-
-
+	
 	public TransactionListener(AlgodClientApi api) {
 		firstListenedRound = -1;
 		lastProcessedRound = -1;
@@ -35,9 +34,11 @@ public class TransactionListener extends Thread {
 	}
 	
 	void onAssetRequest() {
-		
 	}
 	
+	public synchronized void stopLoop() {
+		stop = true;
+	}
 	
 	private void processBlock(Block block) {
 		TransactionList transactions = block.getTxns();
@@ -49,13 +50,7 @@ public class TransactionListener extends Thread {
 	}
 	
 	private void updateStatus() {
-		
-		try {
-			status = api.algodApiInstance.getStatus();
-		} catch (ApiException e1) {
-			e1.printStackTrace();
-			throw new RuntimeException("Failed to get node status.");
-		}
+		status = api.getNodeStatus();
 	}
 	
 
@@ -65,12 +60,7 @@ public class TransactionListener extends Thread {
 	}
 	
 	private Block getBlock(long round) {
-		try {
-			return api.algodApiInstance.getBlock(BigInteger.valueOf(round));
-		} catch (ApiException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get block: " + round);
-		}
+		return api.getBlock(round);
 	}
 	
 	public void run() {
@@ -103,6 +93,5 @@ public class TransactionListener extends Thread {
 			System.out.println("This round: " + currentRound + " last round: " + nextRound);
 		} while (false == stop);
 	}
-	//api.algodApiInstance.getBlock(xxx);
-	}
+}
 

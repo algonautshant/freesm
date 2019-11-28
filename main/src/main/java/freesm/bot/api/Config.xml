@@ -34,17 +34,9 @@
 						98cb126e8a59ecb79c8bb7f6915c9d52b23b2e0a22ca16ef18db672158726caa
 					</token>
 				</kmd>
+				<address>
+				</address>
 
-
-				<publickey>
-
-				</publickey>
-
-				<secretkey>
-				</secretkey>
-
-				<mnemonic>
-				</mnemonic>
 			</botwallet>
 		</botNode>
 	</bot>
