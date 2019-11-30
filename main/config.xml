@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><freesm>
+	<bot>
+		<botNode>
+			<path>
+				/Users/shantkarakashian/node/local/localnetwork/
+			</path>
+
+			<algod>
+				<net>127.0.0.1:49613</net>
+				<token>dbb134f8cffa1b2dfac5af493e6487f1b2a8a05af6489191684d79cfb9467891</token>
+			</algod>
+
+			<botwallet>
+				<name>botwallet</name>
+				<pasword>botwallet</pasword>
+
+				<kmd>
+					<net>127.0.0.1:7833</net>
+					<token>4c37528c256cc4c1af547abb22bb98ccc630285e86da70286168e64f5546e765</token>
+				</kmd>
+				<address>
+				</address>
+
+			</botwallet>
+		</botNode>
+		<address>EP3ATDLS6G6AESZHKOFW74PJW7FLHLGI5DA6LQBE42TEY5EJDPNQM3JNUU</address>
+	</bot>
+</freesm>

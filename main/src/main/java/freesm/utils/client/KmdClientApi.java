@@ -24,14 +24,19 @@ public class KmdClientApi {
 	public KmdClientApi(String kmdApiAddr, String kmdApiToken) {
 		KmdClient kmdClientInstance;
         kmdClientInstance = new KmdClient();
+        if (kmdApiAddr.indexOf("//") == -1) {
+        	kmdApiAddr = "http://" + kmdApiAddr;
+        }
         kmdClientInstance.setBasePath(kmdApiAddr);
-        ApiKeyAuth api_key = (ApiKeyAuth) kmdClientInstance.getAuthentication("api_key");
-        api_key.setApiKey(kmdApiToken);
+        kmdClientInstance.setApiKey(kmdApiToken);
         kmdApiInstance = new KmdApi(kmdClientInstance);
 	}
 	
 	public boolean hasWallet(String name) {
 		List<APIV1Wallet> list = getWalletList();
+		if (list == null) {
+			return false;
+		}
 		for (APIV1Wallet w : list) {
 			if (name.contentEquals(w.getName())) {
 				return true;
@@ -68,10 +73,11 @@ public class KmdClientApi {
 		}
 		
 		InitWalletHandleTokenRequest req = new InitWalletHandleTokenRequest();
-		req.setWalletId(walletName);
+		req.setWalletId(walletId);
 		req.setWalletPassword(walletPassword);
 		try {
-			return kmdApiInstance.initWalletHandleToken(req).getWalletHandleToken();
+			APIV1POSTWalletInitResponse kmdi = kmdApiInstance.initWalletHandleToken(req);
+			return kmdi.getWalletHandleToken();
 		} catch (ApiException e) {
 			e.printStackTrace();
 			throw new RuntimeException("Failed to get the wallet handle.");
