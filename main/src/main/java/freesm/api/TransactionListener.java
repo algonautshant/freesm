@@ -1,9 +1,8 @@
-package freesm.bot;
+package freesm.api;
 
-import java.math.BigInteger;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
-import com.algorand.algosdk.algod.client.ApiException;
 import com.algorand.algosdk.algod.client.model.Block;
 import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.Transaction;
@@ -14,23 +13,24 @@ import freesm.utils.events.NodeEventListener;
 
 public class TransactionListener extends Thread {
 	
-	private long firstListenedRound;
 	private long lastProcessedRound;
 	private volatile boolean stop;
 	private NodeStatus status;
 	private AlgodClientApi api;
+	private PrintStream out;
+	private ArrayList<NodeEventListener> listeners;
 	
-	public TransactionListener(AlgodClientApi api) {
-		firstListenedRound = -1;
+	public TransactionListener(AlgodClientApi api, PrintStream out) {
 		lastProcessedRound = -1;
 		stop = false;
 		this.api = api;
+		this.out = out;
+		listeners = new ArrayList<NodeEventListener>();
 	}
-	
-	ArrayList<NodeEventListener> listeners;
 
-	public void registerListener(NodeEventListener listener) {
+	public synchronized void registerListener(NodeEventListener listener) {
 		listeners.add(listener);
+		out.println("Listener added.");
 	}
 	
 	void onAssetRequest() {
@@ -43,16 +43,15 @@ public class TransactionListener extends Thread {
 	private void processBlock(Block block) {
 		TransactionList transactions = block.getTxns();
 		for (Transaction tx : transactions.getTransactions()) {
-			
-			System.out.println(tx.toString());
-			
+			for (NodeEventListener lsn : listeners) {
+				lsn.onNewTransaction(tx);
+			}
 		}
 	}
 	
 	private void updateStatus() {
 		status = api.getNodeStatus();
 	}
-	
 
 	private long getLastRound() {
 		this.updateStatus();
@@ -69,13 +68,15 @@ public class TransactionListener extends Thread {
 	
 	public void startLoop() {
 		long lastRound = this.getLastRound();
-		this.firstListenedRound = 0;
 		this.lastProcessedRound = 0;
 		long currentRound = lastRound;
-
+		out.println("Started listening.");
 		do {
 			Block block = null;
 			if (currentRound > this.lastProcessedRound) {
+				for (NodeEventListener lsn : listeners) {
+					lsn.onNewRound(currentRound);
+				}
 				block = this.getBlock(currentRound);
 				this.processBlock(block);								
 				this.lastProcessedRound = currentRound;
@@ -90,8 +91,8 @@ public class TransactionListener extends Thread {
 				}
 			}
 			currentRound = Math.min(currentRound+1, nextRound);
-			System.out.println("This round: " + currentRound + " last round: " + nextRound);
 		} while (false == stop);
+		out.println("Stopped listening.");
 	}
 }
 

@@ -1,8 +1,8 @@
-package freesm.client.fsmbot;
+package freesm.utils.events;
 
 import java.nio.ByteBuffer;
 
-public class BotRequest {
+public class Request {
 	
 	private static String RegisterAccount = "r";
 	private static String RequestAsset = "a";

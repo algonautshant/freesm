@@ -11,7 +11,6 @@ import com.algorand.algosdk.algod.client.model.Block;
 import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.algod.client.model.TransactionParams;
-import com.algorand.algosdk.crypto.Address;
 import com.algorand.algosdk.crypto.Digest;
 import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;

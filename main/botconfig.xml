@@ -2,12 +2,12 @@
 	<bot>
 		<botNode>
 			<path>
-				/Users/shantkarakashian/node/testnetdata/
+				/Users/shantkarakashian/node/testnetdata/BotNode
 			</path>
 
 			<algod>
 				<net>127.0.0.1:8080</net>
-				<token>d429b3850cd893a762285962850cb102b949adebd29a51ccd984501dc20b4cc5</token>
+				<token>149a5eacd707f902999ebf27283b062c3916baf4064cb5a91fa48ce4e022c71c</token>
 			</algod>
 
 			<botwallet>

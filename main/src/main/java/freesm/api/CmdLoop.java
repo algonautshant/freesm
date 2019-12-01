@@ -1,40 +1,36 @@
-package freesm.bot.api;
+package freesm.api;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import freesm.bot.TransactionListener;
-import freesm.utils.client.AlgodClientApi;
+import freesm.utils.events.NodeEventListener;
 
 public class CmdLoop {
 
-	private static String header = "FreeSM Bot\n  "
+	private static String header = "FreeSM Bot\n"
 			+ "Commands: \n"
-			+ "runchecks  <path to config.xml> // loads configuration, runs checks and initializes fsmbot\n"
-			+ "starttlistening                 // start listening to transaciton and processes requests\n"
-			+ "stoplistening                   // stop listening to transactions\n"
-			+ "pwd                             // get current working directory";
+			+ "	init  [path to config.xml]      // loads configuration, runs checks and initializes fsmbot\n"
+			+ "	startlistening                  // start listening to transaciton and processes requests\n"
+			+ "	stoplistening                   // stop listening to transactions\n"
+			+ "	pwd                             // get current working directory\n"
+			+ "	help                            // print this message";
 	
 	private HashMap<String, Integer>  commandMap;
 
 	public CmdLoop() {
 		commandMap = new HashMap<String, Integer>();
-		commandMap.put("runchecks", 1);
+		commandMap.put("init", 1);
 		commandMap.put("startlistening",  2);
 		commandMap.put("stoplistening",  3);
 		commandMap.put("pwd",  4);
+		commandMap.put("help", 5);
 	}
 	
-	public void startLoop() {
-		boolean inturrupted = false;
+	public void startLoop(BaseConfiguration config, NodeEventListener nodeEventListener) {
 		TransactionListener tl = null;
-		AlgodClientApi algodApi = null;
-		Configuration config = null;
-
 		System.out.println(header);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String line;
@@ -53,25 +49,19 @@ public class CmdLoop {
 					commandId = commandMap.get(keyword);
 				} catch (NullPointerException e) {}
 				switch(commandId) {
-				case 1: // runchecks
-					if (arg.length() == 0) {
-						System.out.println("config file must be passed as argument.");
-						break;
-					}
-					try {
-						config = new Configuration(arg);
-					} catch (Exception e) {}
-					if (config != null) {
-						config.runChecks(System.out, System.in);
-					}
+				case 1: // init
+					config.init(System.out, System.in);
+
 					break;
 				case 2:  //  startlistening
-					if (algodApi == null || config == null) {
-						System.out.println("Run 'runchecks' first to load the configuration");
+					if (config == null || config.getAlgodClientApi() == null) {
+						System.out.println("Run 'init' first to load the configuration");
 						break;
 					} else {
-						algodApi = config.getAlgodClientApi();
-						tl = new TransactionListener(algodApi);
+						tl = new TransactionListener(config.getAlgodClientApi(), System.out);
+						tl.start();
+						tl.registerListener(nodeEventListener);
+						tl.registerListener(new BaseNodeEventListener());
 					}
 					break;	
 				case 3: 
@@ -84,6 +74,10 @@ public class CmdLoop {
 				case 4:
 					System.out.println(System.getProperty("user.dir"));
 					break;
+				case 5:
+					System.out.println(header);
+					break;
+					
 				default:
 					System.out.println("Unknown input: " + line);
 				}

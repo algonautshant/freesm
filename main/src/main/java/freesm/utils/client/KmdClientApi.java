@@ -1,14 +1,10 @@
 package freesm.utils.client;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import com.algorand.algosdk.crypto.Address;
 import com.algorand.algosdk.kmd.client.ApiException;
 import com.algorand.algosdk.kmd.client.KmdClient;
 import com.algorand.algosdk.kmd.client.api.KmdApi;
-import com.algorand.algosdk.kmd.client.auth.ApiKeyAuth;
-import com.algorand.algosdk.kmd.client.model.APIV1POSTKeyListResponse;
 import com.algorand.algosdk.kmd.client.model.APIV1POSTWalletInitResponse;
 import com.algorand.algosdk.kmd.client.model.APIV1POSTWalletResponse;
 import com.algorand.algosdk.kmd.client.model.APIV1Wallet;

@@ -1,16 +1,57 @@
 package freesm.bot;
 
+import com.algorand.algosdk.algod.client.model.Transaction;
+
 import freesm.utils.account.Account;
 import freesm.utils.client.AlgodClientApi;
+import freesm.utils.events.NodeEventListener;
 
-public class FreeSmBot {
+public class FreeSmBot implements NodeEventListener{
 	
-	private AlgodClientApi api;
-	private Account account;
+	private BotConfiguration botConfig;
 	
-	public FreeSmBot(String accountMnemonic, String algodApiAddr, String algodApiToken) {
-		account = Account.loadAccount(accountMnemonic);
-		api = new AlgodClientApi(algodApiAddr, algodApiToken);
+	public FreeSmBot(BotConfiguration botConfig) {
+		this.botConfig = botConfig;
+	}
+
+	public void onRegisterRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onAssetRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onPublishRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onCommentRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNewRound() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNewTransaction() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNewRound(long currentRound) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNewTransaction(Transaction tx) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

@@ -1,4 +1,4 @@
-package freesm.client.publisher;
+package freesm.publisher;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
