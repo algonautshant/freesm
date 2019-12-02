@@ -46,6 +46,7 @@ public class BotConfiguration extends BaseConfiguration {
 				passwd = br.readLine();
 			} catch (IOException e) {
 				ReportException.errorMessageDefaultAction("Failed to read password.", e);
+				return;
 			}
 			String id = kmd.createWallet();
 			out.println("Wallet botwallet created with id: " + id);
