@@ -44,7 +44,7 @@ public class AlgodClientApi {
 			String fromAddress,
 			String toAddress) {
 		
-		Transaction tx = this.getTransaction();
+		Transaction tx = this.getBlankTransaction();
 		try {
 			tx.sender = new Address(fromAddress);
 			tx.type = Type.AssetTransfer;
@@ -60,7 +60,7 @@ public class AlgodClientApi {
 		return  tx;
 	}
 	
-	public Transaction getTransaction() {
+	public Transaction getBlankTransaction() {
         TransactionParams params;
 		try {
 			params = algodApiInstance.transactionParams();

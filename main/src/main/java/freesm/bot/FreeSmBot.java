@@ -15,7 +15,7 @@ public class FreeSmBot implements NodeEventListener{
 	}
 
 	public void onRegisterRequest() {
-		botConfig.getAlgodClientApi()
+		//botConfig.getAlgodClientApi()
 		
 	}
 

@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><freesm>
-	<bot>
-		<botNode>
-			<path>
-				/Users/shantkarakashian/node/testnetdata/BotNode
-			</path>
+	<Node>
+		<path>
+			/Users/shantkarakashian/node/testnetdata/BotNode
+		</path>
 
-			<algod>
-				<net>127.0.0.1:8080</net>
-				<token>149a5eacd707f902999ebf27283b062c3916baf4064cb5a91fa48ce4e022c71c</token>
-			</algod>
+		<algod>
+			<net>127.0.0.1:8080</net>
+			<token>149a5eacd707f902999ebf27283b062c3916baf4064cb5a91fa48ce4e022c71c</token>
+		</algod>
 
-			<botwallet>
-				<name>botwallet</name>
-				<pasword>botwallet</pasword>
+		<wallet>
+			<name>botwallet</name>
+			<pasword>botwallet</pasword>
 
-				<kmd>
-					<net>127.0.0.1:60901</net>
-					<token>32ea55fc21beadda4d4e4d8ba3a0b610e58087385f554ad5a463974aecfaaf16</token>
-				</kmd>
-				<address>
-				</address>
+			<kmd>
+				<net>127.0.0.1:7833</net>
+				<token>32ea55fc21beadda4d4e4d8ba3a0b610e58087385f554ad5a463974aecfaaf16</token>
+			</kmd>
+			<address>
+			</address>
 
-			</botwallet>
-		</botNode>
-		<address>EP3ATDLS6G6AESZHKOFW74PJW7FLHLGI5DA6LQBE42TEY5EJDPNQM3JNUU</address>
-	</bot>
+		</wallet>
+	</Node>
+	<address>EP3ATDLS6G6AESZHKOFW74PJW7FLHLGI5DA6LQBE42TEY5EJDPNQM3JNUU
+	</address>
 </freesm>

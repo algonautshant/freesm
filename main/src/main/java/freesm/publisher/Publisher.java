@@ -10,10 +10,11 @@ import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;
 
 import freesm.utils.client.AlgodClientApi;
+import freesm.utils.events.NodeEventListener;
 import freesm.utils.messaging.ReportException;
 import freesm.utils.account.Account;
 
-public class Publisher {
+public class Publisher implements NodeEventListener {
 	
 	private AlgodClientApi api;
 	private Account account;
@@ -31,13 +32,7 @@ public class Publisher {
 		return tid;
 	}
 	
-	public Publisher(String accountMnemonic) {
-		this(accountMnemonic, "127.0.0.1:65014", "dbb134f8cffa1b2dfac5af493e6487f1b2a8a05af6489191684d79cfb9467891");
-	}
-	
-	public Publisher(String accountMnemonic, String algodApiAddr, String algodApiToken) {
-		account = Account.loadAccount(accountMnemonic);
-		api = new AlgodClientApi(algodApiAddr, algodApiToken);
+	public Publisher(PublisherConfiguration publisherConfig) {
 	}
 	
 	public void registerAccount() {
@@ -48,6 +43,31 @@ public class Publisher {
 	
 	public void publishArticle(String url) {
 		
+		
+	}
+
+	public void onRegisterRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onPublishRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onCommentRequest() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNewRound(long currentRound) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void onNewTransaction(com.algorand.algosdk.algod.client.model.Transaction tx) {
+		// TODO Auto-generated method stub
 		
 	}
 		

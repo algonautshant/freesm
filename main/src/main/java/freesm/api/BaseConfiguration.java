@@ -24,6 +24,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -39,18 +40,18 @@ public class BaseConfiguration {
 	protected AlgodClientApi algodApi;
 	protected KmdClientApi kmd;
 	
-	protected static String NODE_PATH = "/freesm/bot/botNode/path";
-	protected static String NODE_NET = "/freesm/bot/botNode/algod/net";
-	protected static String NODE_TOKEN = "/freesm/bot/botNode/algod/token";
+	protected static String NODE_PATH = "/freesm/Node/path";
+	protected static String NODE_NET = "/freesm/Node/algod/net";
+	protected static String NODE_TOKEN = "/freesm/Node/algod/token";
 	
-	protected static String WALLET_NAME = "/freesm/bot/botNode/botwallet/name";
-	protected static String WALLET_PASSWORD = "/freesm/bot/botNode/botwallet/pasword";
+	protected static String WALLET_NAME = "/freesm/Node/wallet/name";
+	protected static String WALLET_PASSWORD = "/freesm/Node/wallet/pasword";
 
-	protected static String KMD_NET = "/freesm/bot/botNode/botwallet/kmd/net";
-	protected static String KMD_TOKEN = "/freesm/bot/botNode/botwallet/kmd/token";
+	protected static String KMD_NET = "/freesm/Node/wallet/kmd/net";
+	protected static String KMD_TOKEN = "/freesm/Node/wallet/kmd/token";
 
 	
-	protected static String ADDRESS = "/freesm/bot/address";
+	protected static String ADDRESS = "/freesm/address";
 	
 	public BaseConfiguration() {
 	}
@@ -115,15 +116,23 @@ public class BaseConfiguration {
 	}
 	
 	protected void setElementValue(String xPath, String value) {
-		XPath toeknPath = XPathFactory.newInstance().newXPath();
+		XPath tokenPath = XPathFactory.newInstance().newXPath();
 		NodeList nodes = null;
 		try {
-			nodes = (NodeList)toeknPath.evaluate(xPath, doc, XPathConstants.NODESET);
+			nodes = (NodeList)tokenPath.evaluate(xPath, doc, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			ReportException.runtimeException("Failed to find path: " + xPath, e);
 		}
-		if (nodes.getLength() != 1) {
+		if (nodes.getLength() > 1) {
 			ReportException.runtimeException("Expected one element for " + xPath + " got: " + nodes.getLength());
+		}
+		if (nodes.getLength() == 0) {
+			try {
+				Node node = (Node)tokenPath.evaluate(xPath, doc, XPathConstants.NODE);
+				node.setTextContent(value);
+			} catch (XPathExpressionException e) {
+				ReportException.runtimeException("Failed to find path: " + xPath, e);
+			}
 		}
 		nodes.item(0).setTextContent(value);
 		saveDocument();
@@ -153,8 +162,11 @@ public class BaseConfiguration {
 			ReportException.errorMessageDefaultAction("Failed to find path: " + xPath, e);
 			return "";
 		}
-		if (nodes.getLength() != 1) {
+		if (nodes.getLength() > 1) {
 			ReportException.errorMessageDefaultAction("Expected one element for " + xPath + " got: " + nodes.getLength());
+		}
+		if (nodes.getLength() == 0) {
+			return "";
 		}
 		return nodes.item(0).getNodeValue().trim();
 	}

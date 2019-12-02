@@ -1,4 +1,4 @@
-package freesm.bot;
+package freesm.publisher;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -8,13 +8,15 @@ import java.io.PrintStream;
 import java.util.List;
 
 import freesm.api.BaseConfiguration;
+import freesm.utils.Utils;
 import freesm.utils.client.KmdClientApi;
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportException; 
 
-public class BotConfiguration extends BaseConfiguration {
+public class PublisherConfiguration extends BaseConfiguration{
+
 	private String configFilePath;
 	
-	public BotConfiguration(String configFilePath) {
+	public PublisherConfiguration(String configFilePath) {
 		super();
 		this.configFilePath = configFilePath;
 	}
@@ -32,29 +34,36 @@ public class BotConfiguration extends BaseConfiguration {
 		
 		String passwd = getElementValue(WALLET_PASSWORD);
 		String walletName = getElementValue(WALLET_NAME);
-		
-		
-		kmd = new KmdClientApi(kmdAddress, kmdToken, walletName, passwd);
-		if (kmd.hasWallet("botwallet")) {
-			out.println("Wallet 'botwallet' found.");
-		} else {
-			out.println("Wallet botwallet is missing. Creating...");
-			out.println("Enter the wallet password ...");
-			InputStreamReader ird = new InputStreamReader(in);			
-			BufferedReader br = new BufferedReader(ird);
-			try {
-				passwd = br.readLine();
-			} catch (IOException e) {
-				ReportException.errorMessageDefaultAction("Failed to read password.", e);
+		if (walletName.isEmpty()) {
+			System.out.println("Enter wallet name:");
+			walletName = Utils.readInput(in, "Failed reading wallet name");
+			if (walletName.isEmpty()) {
+				ReportException.errorMessageDefaultAction("Try init again. Invalid wallet name.");
 				return;
 			}
-			String id = kmd.createWallet();
-			out.println("Wallet botwallet created with id: " + id);
-			this.setElementValue(WALLET_PASSWORD, passwd);
-			this.setElementValue(WALLET_NAME, "botwallet");
 		}
+		
+		if (passwd.isEmpty()) {
+			System.out.println("Enter the password for wallet: " + walletName);
+			passwd = Utils.readInput(in, "Failed reading wallet password");
+			if (passwd.isEmpty()) {
+				ReportException.errorMessageDefaultAction("Try init again. Invalid wallet password.");
+				return;
+			}
+		}
+		kmd = new KmdClientApi(kmdAddress, kmdToken, walletName, passwd);
+		if (kmd.hasWallet(walletName)) {
+			out.println("Wallet " + walletName + " found.");
+		} else {
+			out.println("Wallet " + walletName + " is missing. Creating...");
+			String id = kmd.createWallet();
+			out.println("Wallet " + walletName + " created with id: " + id);
+		}
+		this.setElementValue(WALLET_PASSWORD, passwd);
+		this.setElementValue(WALLET_NAME, walletName);
 
-		// Check for fsmbot account
+
+		// Check for publisher account
 		List<String> addresses = kmd.getAddressesInWallet();
 		if (addresses == null || 0 == addresses.size()) {
 			out.println("Generating a key using kmd.");
@@ -66,7 +75,7 @@ public class BotConfiguration extends BaseConfiguration {
 		}		
 		setElementValue(ADDRESS, addresses.get(0));
 		
-		//  Create the assets if not created yet
+		//  Accept the assets if not accepted yet
 		// TODO
 		
 	}

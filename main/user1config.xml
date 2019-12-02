@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><freesm>
+	<Node>
+		<path>
+			/Users/shantkarakashian/node/testnetdata/PublisherNode
+		</path>
+
+		<algod>
+			<net>127.0.0.1:54310</net>
+			<token>f4b05cccc397b82e0fd69d859ffe3a71344a21e7308db6009dc501838e5759e8</token>
+		</algod>
+
+		<wallet>
+			<name>user1wallet</name>
+			<pasword>user1wallet</pasword>
+
+			<kmd>
+				<net>127.0.0.1:65057</net>
+				<token>07d3f75e5160b93c6e09ee781fadcb28daa4cac7845bebe1911b5d78aad2d1d0</token>
+			</kmd>
+			<address>
+			</address>
+
+		</wallet>
+	</Node>
+	<address>H45J6AH76A6QBILGY7Y4WO4WOXDWMOGMCJOTPT3L6HZJYDP2B64UHCOJWU</address>
+</freesm>

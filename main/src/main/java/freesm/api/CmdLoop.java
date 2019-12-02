@@ -84,6 +84,7 @@ public class CmdLoop {
 				}
 				System.out.print(">> ");				
 			}
+			System.out.println("\nBye.");
 		} catch (IOException e) {
 			ReportException.errorMessageDefaultAction("Failed to read input from command line.", e);
 		}
