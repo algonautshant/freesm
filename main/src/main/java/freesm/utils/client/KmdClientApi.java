@@ -12,13 +12,25 @@ import com.algorand.algosdk.kmd.client.model.CreateWalletRequest;
 import com.algorand.algosdk.kmd.client.model.GenerateKeyRequest;
 import com.algorand.algosdk.kmd.client.model.InitWalletHandleTokenRequest;
 import com.algorand.algosdk.kmd.client.model.ListKeysRequest;
+import com.algorand.algosdk.kmd.client.model.SignTransactionRequest;
+import com.algorand.algosdk.transaction.Transaction;
+import com.algorand.algosdk.util.Encoder;
 
 public class KmdClientApi {
 
 	private KmdApi kmdApiInstance;
+	private String walletName;
+	private String walletPasswrd;
 	
-	public KmdClientApi(String kmdApiAddr, String kmdApiToken) {
+	public KmdClientApi(
+			String kmdApiAddr, 
+			String kmdApiToken, 
+			String walletName,
+			String walletPasswrd) {
 		KmdClient kmdClientInstance;
+		this.walletName = walletName;
+		this.walletPasswrd =  walletPasswrd;
+		
         kmdClientInstance = new KmdClient();
         if (kmdApiAddr.indexOf("//") == -1) {
         	kmdApiAddr = "http://" + kmdApiAddr;
@@ -41,12 +53,12 @@ public class KmdClientApi {
 		return false;
 	}
 	
-	public String createWallet(String walletName, String walletPassword) {
+	public String createWallet() {
         APIV1POSTWalletResponse wallet;
         CreateWalletRequest req = new CreateWalletRequest();
         req.setWalletName(walletName);
         req.setWalletDriverName("sqlite");
-        req.setWalletPassword(walletPassword);
+        req.setWalletPassword(walletPasswrd);
         try {
 			wallet = kmdApiInstance.createWallet(req);
 		} catch (ApiException e) {
@@ -56,7 +68,7 @@ public class KmdClientApi {
         return wallet.getWallet().getId();
 	}
 	
-	String getWalletHandle(String walletName, String walletPassword) {
+	String getWalletHandle() {
 		List<APIV1Wallet> wList = getWalletList();
 		String walletId = "";
 		for (APIV1Wallet w : wList) {
@@ -70,7 +82,7 @@ public class KmdClientApi {
 		
 		InitWalletHandleTokenRequest req = new InitWalletHandleTokenRequest();
 		req.setWalletId(walletId);
-		req.setWalletPassword(walletPassword);
+		req.setWalletPassword(walletPasswrd);
 		try {
 			APIV1POSTWalletInitResponse kmdi = kmdApiInstance.initWalletHandleToken(req);
 			return kmdi.getWalletHandleToken();
@@ -80,10 +92,10 @@ public class KmdClientApi {
 		}
 	}
 	
-	public List<String> getAddressesInWallet(String walletName, String walletPassword) {
+	public List<String> getAddressesInWallet() {
 		
 		ListKeysRequest lkrq = new ListKeysRequest();
-		lkrq.setWalletHandleToken(this.getWalletHandle(walletName, walletPassword));
+		lkrq.setWalletHandleToken(this.getWalletHandle());
 		try {
 			return kmdApiInstance.listKeysInWallet(lkrq).getAddresses();
 		} catch (ApiException e) {
@@ -92,10 +104,10 @@ public class KmdClientApi {
 		}
 	}
 	
-	public void generateKey(String walletName, String walletPassword) {
+	public void generateKey() {
         GenerateKeyRequest req = new GenerateKeyRequest();
         req.setDisplayMnemonic(false);
-        req.setWalletHandleToken(getWalletHandle(walletName, walletPassword));
+        req.setWalletHandleToken(getWalletHandle());
         try {
 			kmdApiInstance.generateKey(req);
 		} catch (ApiException e) {
@@ -113,5 +125,20 @@ public class KmdClientApi {
 			throw new RuntimeException("Failed to get the wallet list from kmd.");
 		}
 		return list;
+	}
+	
+	public byte [] signTransaction(Transaction tx)  {
+		
+        SignTransactionRequest req = new SignTransactionRequest();
+        req.setTransaction(Encoder.encodeToMsgPackNoException(tx));
+        req.setWalletHandleToken(getWalletHandle());
+        req.setWalletPassword(walletPasswrd);
+        try {
+        	return kmdApiInstance.signTransaction(req).getSignedTransaction();
+		} catch (ApiException e) {
+			e.printStackTrace();
+			System.err.println("Failed to sign transaction.");
+			return null;
+		}        
 	}
 }

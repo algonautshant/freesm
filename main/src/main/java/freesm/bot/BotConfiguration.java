@@ -28,7 +28,12 @@ public class BotConfiguration extends BaseConfiguration {
 		out.println("KMD Token: " + kmdToken);
 		
 		out.println("Checking for the wallet...");
-		kmd = new KmdClientApi(kmdAddress, kmdToken);
+		
+		String passwd = getElementValue(WALLET_PASSWORD);
+		String walletName = getElementValue(WALLET_NAME);
+		
+		
+		kmd = new KmdClientApi(kmdAddress, kmdToken, walletName, passwd);
 		if (kmd.hasWallet("botwallet")) {
 			out.println("Wallet 'botwallet' found.");
 		} else {
@@ -36,32 +41,33 @@ public class BotConfiguration extends BaseConfiguration {
 			out.println("Enter the wallet password ...");
 			InputStreamReader ird = new InputStreamReader(in);			
 			BufferedReader br = new BufferedReader(ird);
-			String passwd;
 			try {
 				passwd = br.readLine();
 			} catch (IOException e) {
 				e.printStackTrace();
 				throw new RuntimeException("Failed to read password.");
 			}
-			String id = kmd.createWallet("botwallet", passwd);
+			String id = kmd.createWallet();
 			out.println("Wallet botwallet created with id: " + id);
 			this.setElementValue(WALLET_PASSWORD, passwd);
 			this.setElementValue(WALLET_NAME, "botwallet");
 		}
 
 		// Check for fsmbot account
-		String passwd = getElementValue(WALLET_PASSWORD);
-		String walletName = getElementValue(WALLET_NAME);
-		List<String> addresses = kmd.getAddressesInWallet(walletName, passwd);
+		List<String> addresses = kmd.getAddressesInWallet();
 		if (addresses == null || 0 == addresses.size()) {
 			out.println("Generating a key using kmd.");
-			kmd.generateKey(walletName, passwd);
-			addresses = kmd.getAddressesInWallet(walletName, passwd);
+			kmd.generateKey();
+			addresses = kmd.getAddressesInWallet();
 		}
 		for (String addr : addresses) {
 			out.println(algodApi.getAccountInformation(addr));
 		}		
 		setElementValue(ADDRESS, addresses.get(0));
+		
+		//  Create the assets if not created yet
+		// TODO
+		
 	}
 	
 	public String getConfigFilePath() {

@@ -19,27 +19,12 @@ public class FreeSmBot implements NodeEventListener{
 		
 	}
 
-	public void onAssetRequest() {
-		// TODO Auto-generated method stub
-		
-	}
-
 	public void onPublishRequest() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	public void onCommentRequest() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onNewRound() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void onNewTransaction() {
 		// TODO Auto-generated method stub
 		
 	}

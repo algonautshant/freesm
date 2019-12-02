@@ -5,7 +5,6 @@ import java.nio.ByteBuffer;
 public class Request {
 	
 	private static String RegisterAccount = "r";
-	private static String RequestAsset = "a";
 	private static String Publish = "p";
 	private static String Comment = "c";
 	
@@ -13,13 +12,6 @@ public class Request {
 		return RegisterAccount.getBytes();
 	}
 
-	public static byte[] requestAsset(long assetId) {
-		ByteBuffer bf = ByteBuffer.allocate(1+Long.BYTES);
-		bf.put(RequestAsset.getBytes());
-		bf.putLong(assetId);
-		return bf.array();
-	}
-	
 	public static byte[] requestPublish(String msg) {
 		ByteBuffer bf = ByteBuffer.allocate(1+msg.length());
 		bf.put(Publish.getBytes());

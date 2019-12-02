@@ -1,6 +1,7 @@
 package freesm.utils.client;
 
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 
 import com.algorand.algosdk.algod.client.AlgodClient;
 import com.algorand.algosdk.algod.client.ApiException;
@@ -11,9 +12,11 @@ import com.algorand.algosdk.algod.client.model.Block;
 import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.algod.client.model.TransactionParams;
+import com.algorand.algosdk.crypto.Address;
 import com.algorand.algosdk.crypto.Digest;
 import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;
+import com.algorand.algosdk.transaction.Transaction.Type;
 import com.algorand.algosdk.util.Encoder;
 
 public class AlgodClientApi {
@@ -31,6 +34,27 @@ public class AlgodClientApi {
         ApiKeyAuth api_key = (ApiKeyAuth) algodClient.getAuthentication("api_key");
         api_key.setApiKey(algodApiToken);
         algodApiInstance = new AlgodApi(algodClient);
+	}
+	
+	public Transaction assetSendTransaction(
+			long assetId, 
+			long assets,
+			String fromAddress,
+			String toAddress) {
+		Transaction tx = this.getTransaction();
+		try {
+			tx.sender = new Address(fromAddress);
+			tx.type = Type.AssetTransfer;
+			tx.assetReceiver = new Address(toAddress);
+			tx.assetIndex = BigInteger.valueOf(assetId);
+			tx.assetCloseTo = new Address(fromAddress);
+			tx.assetAmount = BigInteger.valueOf(assets);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+			System.err.println("Failed to get account from address.");
+			return null;
+		}
+		return  tx;
 	}
 	
 	public Transaction getTransaction() {
