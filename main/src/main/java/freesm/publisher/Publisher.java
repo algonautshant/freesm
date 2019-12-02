@@ -10,8 +10,7 @@ import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;
 
 import freesm.utils.client.AlgodClientApi;
-import freesm.client.fsmbot.BotRequest;
-import freesm.client.fsmbot.FsmBot;
+import freesm.utils.messaging.ReportException;
 import freesm.utils.account.Account;
 
 public class Publisher {
@@ -22,11 +21,10 @@ public class Publisher {
 	private TransactionID signAndSendTransaction(Transaction tx) {
 		try {
 			tx.sender = new Address(account.getAddress());
-			tx.receiver = new Address(FsmBot.getBotAddress());
+//			tx.receiver = new Address(FsmBot.getBotAddress());
 			tx.amount = BigInteger.valueOf(100);
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get Address from address string.");
+			ReportException.errorMessageDefaultAction("Failed to get Address from address string.", e);
 		}
 		SignedTransaction stx = account.signTransaction(tx);
 		TransactionID tid = api.sendTransaction(stx);
@@ -44,7 +42,7 @@ public class Publisher {
 	
 	public void registerAccount() {
 		Transaction tx = api.getTransaction();
-		tx.note = BotRequest.requestRegisterAccount();
+//		tx.note = BotRequest.requestRegisterAccount();
 		signAndSendTransaction(tx);		
 	}
 	

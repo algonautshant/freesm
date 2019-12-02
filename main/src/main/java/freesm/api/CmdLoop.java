@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import freesm.utils.events.NodeEventListener;
+import freesm.utils.messaging.ReportException;
 
 public class CmdLoop {
 
@@ -43,7 +44,7 @@ public class CmdLoop {
 					continue;
 				}
 				String keyword = st.nextToken();
-				String arg = st.hasMoreTokens() ? st.nextToken() : "";
+				//String arg = st.hasMoreTokens() ? st.nextToken() : "";
 				int commandId = 9999;
 				try {
 					commandId = commandMap.get(keyword);
@@ -84,8 +85,7 @@ public class CmdLoop {
 				System.out.print(">> ");				
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to read input from command line.");
+			ReportException.errorMessageDefaultAction("Failed to read input from command line.", e);
 		}
 	}
 }

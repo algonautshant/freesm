@@ -9,6 +9,7 @@ import java.util.List;
 
 import freesm.api.BaseConfiguration;
 import freesm.utils.client.KmdClientApi;
+import freesm.utils.messaging.ReportException;
 
 public class BotConfiguration extends BaseConfiguration {
 	private String configFilePath;
@@ -44,8 +45,7 @@ public class BotConfiguration extends BaseConfiguration {
 			try {
 				passwd = br.readLine();
 			} catch (IOException e) {
-				e.printStackTrace();
-				throw new RuntimeException("Failed to read password.");
+				ReportException.errorMessageDefaultAction("Failed to read password.", e);
 			}
 			String id = kmd.createWallet();
 			out.println("Wallet botwallet created with id: " + id);

@@ -19,6 +19,8 @@ import com.algorand.algosdk.transaction.Transaction;
 import com.algorand.algosdk.transaction.Transaction.Type;
 import com.algorand.algosdk.util.Encoder;
 
+import freesm.utils.messaging.ReportException;
+
 public class AlgodClientApi {
 	private AlgodApi algodApiInstance;
 	
@@ -41,6 +43,7 @@ public class AlgodClientApi {
 			long assets,
 			String fromAddress,
 			String toAddress) {
+		
 		Transaction tx = this.getTransaction();
 		try {
 			tx.sender = new Address(fromAddress);
@@ -98,8 +101,8 @@ public class AlgodClientApi {
 		try {
 			id = algodApiInstance.rawTransaction(encodedTxBytes);
 		} catch (ApiException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to submit raw transaction.");
+			ReportException.errorMessageDefaultAction("Failed to submit raw transaction.", e);
+			return null;
 		}
         return id;
 	}
@@ -108,8 +111,8 @@ public class AlgodClientApi {
 		try {
 			return algodApiInstance.getStatus();
 		} catch (ApiException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get node status.");
+			ReportException.errorMessageDefaultAction("Failed to get node status.", e);
+			return null;
 		}
 	}
 	
@@ -117,8 +120,8 @@ public class AlgodClientApi {
 		try {
 			return algodApiInstance.getBlock(BigInteger.valueOf(round));
 		} catch (ApiException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get block: " + round);
+			ReportException.errorMessageDefaultAction("Failed to get block: " + round, e);
+			return null;
 		}
 	}
 	
@@ -126,8 +129,16 @@ public class AlgodClientApi {
 		try {
 			return algodApiInstance.accountInformation(address);
 		} catch (ApiException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get account information.");
+			ReportException.errorMessageDefaultAction("Failed to get account information.", e);
+			return null;
+		}
+	}
+	
+	public void sendTransaction(byte[] signedTransactionBytes ) {
+		try {
+			algodApiInstance.rawTransaction(signedTransactionBytes);
+		} catch (ApiException e) {
+			ReportException.errorMessageDefaultAction("Failed to send transaction", e);
 		}
 	}
 }
