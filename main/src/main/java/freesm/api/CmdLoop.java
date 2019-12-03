@@ -7,17 +7,19 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 import freesm.utils.events.NodeEventListener;
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
 public class CmdLoop {
 
 	private static String header = "FreeSM Bot\n"
 			+ "Commands: \n"
-			+ "	init  [path to config.xml]      // loads configuration, runs checks and initializes fsmbot\n"
-			+ "	startlistening                  // start listening to transaciton and processes requests\n"
-			+ "	stoplistening                   // stop listening to transactions\n"
-			+ "	pwd                             // get current working directory\n"
-			+ "	help                            // print this message";
+			+ "	init              // loads configuration, runs checks and initializes fsmbot\n"
+			+ "	startlistening    // start listening to transaciton and processes requests\n"
+			+ "	stoplistening     // stop listening to transactions\n"
+			+ "	register          // pay bot and receive assets\n"
+			+ "	publish <article> // publish the  content   in <article>\n"
+			+ "	pwd               // get current working directory\n"
+			+ "	help              // print this message";
 	
 	private HashMap<String, Integer>  commandMap;
 
@@ -28,9 +30,11 @@ public class CmdLoop {
 		commandMap.put("stoplistening",  3);
 		commandMap.put("pwd",  4);
 		commandMap.put("help", 5);
+		commandMap.put("register", 6);
+		commandMap.put("publish", 7);
 	}
 	
-	public void startLoop(BaseConfiguration config, NodeEventListener nodeEventListener) {
+	public void startLoop(Actions action, NodeEventListener nodeEventListener) {
 		TransactionListener tl = null;
 		System.out.println(header);
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -44,25 +48,25 @@ public class CmdLoop {
 					continue;
 				}
 				String keyword = st.nextToken();
-				//String arg = st.hasMoreTokens() ? st.nextToken() : "";
+				String arg = st.hasMoreTokens() ? line.substring(keyword.length()).trim() : "";
 				int commandId = 9999;
 				try {
 					commandId = commandMap.get(keyword);
 				} catch (NullPointerException e) {}
 				switch(commandId) {
 				case 1: // init
-					config.init(System.out, System.in);
+					action.init(System.out, System.in);
 
 					break;
 				case 2:  //  startlistening
-					if (config == null || config.getAlgodClientApi() == null) {
+					if (action == null || action.getAlgodClientApi() == null) {
 						System.out.println("Run 'init' first to load the configuration");
 						break;
 					} else {
-						tl = new TransactionListener(config.getAlgodClientApi(), System.out);
+						tl = new TransactionListener(action.getAlgodClientApi(), System.out);
 						tl.start();
 						tl.registerListener(nodeEventListener);
-						tl.registerListener(new BaseNodeEventListener());
+//						tl.registerListener(new BaseNodeEventListener());
 					}
 					break;	
 				case 3: 
@@ -78,7 +82,12 @@ public class CmdLoop {
 				case 5:
 					System.out.println(header);
 					break;
-					
+				case 6:
+					action.register();
+					break;
+				case  7:
+					action.publishArticle(arg);
+					break;
 				default:
 					System.out.println("Unknown input: " + line);
 				}
@@ -86,7 +95,7 @@ public class CmdLoop {
 			}
 			System.out.println("\nBye.");
 		} catch (IOException e) {
-			ReportException.errorMessageDefaultAction("Failed to read input from command line.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to read input from command line.", e);
 		}
 	}
 }

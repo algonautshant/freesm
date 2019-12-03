@@ -1,6 +1,6 @@
 package freesm.utils.messaging;
 
-public class ReportException {
+public class ReportMessage {
 
 	public static void errorMessageDefaultAction(String msg) {
 		messageNoThrow(msg, null);
@@ -26,5 +26,9 @@ public class ReportException {
 	public static void runtimeException(String msg, Exception e) {
 		e.printStackTrace();
 		throw new RuntimeException(msg);
+	}
+	
+	public static void printMessage(String msg) {
+		System.out.println(msg);
 	}
 }

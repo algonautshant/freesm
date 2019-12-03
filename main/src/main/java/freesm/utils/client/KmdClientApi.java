@@ -16,7 +16,7 @@ import com.algorand.algosdk.kmd.client.model.SignTransactionRequest;
 import com.algorand.algosdk.transaction.Transaction;
 import com.algorand.algosdk.util.Encoder;
 
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
 public class KmdClientApi {
 
@@ -64,7 +64,7 @@ public class KmdClientApi {
         try {
 			wallet = kmdApiInstance.createWallet(req);
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to create wallet: " + walletName, e);
+			ReportMessage.errorMessageDefaultAction("Failed to create wallet: " + walletName, e);
 			return "";
 		}
         return wallet.getWallet().getId();
@@ -79,7 +79,7 @@ public class KmdClientApi {
 			}
 		}
 		if (walletId.isEmpty()) {
-			ReportException.errorMessageDefaultAction("Did not find wallet: " + walletName);
+			ReportMessage.errorMessageDefaultAction("Did not find wallet: " + walletName);
 			return "";
 		}
 		
@@ -90,7 +90,7 @@ public class KmdClientApi {
 			APIV1POSTWalletInitResponse kmdi = kmdApiInstance.initWalletHandleToken(req);
 			return kmdi.getWalletHandleToken();
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to get the wallet handle.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to get the wallet handle.", e);
 			return "";
 		}
 	}
@@ -102,7 +102,7 @@ public class KmdClientApi {
 		try {
 			return kmdApiInstance.listKeysInWallet(lkrq).getAddresses();
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to get accounts in the wallet: " + walletName, e);
+			ReportMessage.errorMessageDefaultAction("Failed to get accounts in the wallet: " + walletName, e);
 			return null;
 		}
 	}
@@ -114,7 +114,7 @@ public class KmdClientApi {
         try {
 			kmdApiInstance.generateKey(req);
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to generate a key.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to generate a key.", e);
 		}
 	}
 	
@@ -123,13 +123,13 @@ public class KmdClientApi {
 		try {
 			list = kmdApiInstance.listWallets().getWallets();
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to get the wallet list from kmd.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to get the wallet list from kmd.", e);
 			return null;
 		}
 		return list;
 	}
 	
-	public byte [] signAndSendTransaction(Transaction tx)  {
+	public byte [] signTransaction(Transaction tx)  {
 		
         SignTransactionRequest req = new SignTransactionRequest();
         req.setTransaction(Encoder.encodeToMsgPackNoException(tx));
@@ -138,7 +138,7 @@ public class KmdClientApi {
         try {
         	return kmdApiInstance.signTransaction(req).getSignedTransaction();
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to sign transaction.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to sign transaction.", e);
 			return null;
 		}        
 	}

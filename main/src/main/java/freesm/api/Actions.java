@@ -28,11 +28,14 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.algorand.algosdk.algod.client.model.TransactionID;
+import com.algorand.algosdk.transaction.Transaction;
+
 import freesm.utils.client.AlgodClientApi;
 import freesm.utils.client.KmdClientApi;
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
-public class BaseConfiguration {
+public class Actions {
 	
 	protected String xmlFilePath;
 	protected Document doc;
@@ -53,24 +56,40 @@ public class BaseConfiguration {
 	
 	protected static String ADDRESS = "/freesm/address";
 	
-	public BaseConfiguration() {
+	public Actions() {
 	}
 	
-	private void loadXml(String filePath) throws IOException {
-		xmlFilePath = filePath;
-		File xmlFile = new File(filePath);
+	public static String getBotAccountAddress(String configFile) {
+		Document doc = loadXmlFile(configFile);
+		if (null != doc) {
+			return getElementValue(ADDRESS, doc);
+		}
+		return "";
+	}
+	
+	public String getAccountAddress() {
+		return getElementValue(ADDRESS);
+	}
+	
+	private static Document loadXmlFile(String xmlFile) {
 		DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder dBuilder;
 		try {
 			dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(xmlFile);
+			return dBuilder.parse(xmlFile);
 		} catch (ParserConfigurationException e) {
-			ReportException.errorMessageDefaultAction("Failed to read configuration xml file", e);
+			ReportMessage.errorMessageDefaultAction("Failed to read configuration xml file", e);
 		} catch (SAXException e) {
-			ReportException.errorMessageDefaultAction("Failed to parse configuration xml file", e);			
+			ReportMessage.errorMessageDefaultAction("Failed to parse configuration xml file", e);			
 		} catch (IOException e) {
-			ReportException.errorMessageDefaultAction("Failed to read configuration xml file: " + filePath, e);
-		}
+			ReportMessage.errorMessageDefaultAction("Failed to read configuration xml file: " + xmlFile, e);
+		} 
+		return null;
+	}
+	
+	private void loadXml(String filePath) throws IOException {
+		xmlFilePath = filePath;
+		doc = loadXmlFile(filePath);
 	}
 	
 	protected void updateNodeParameters() {
@@ -121,17 +140,17 @@ public class BaseConfiguration {
 		try {
 			nodes = (NodeList)tokenPath.evaluate(xPath, doc, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			ReportException.runtimeException("Failed to find path: " + xPath, e);
+			ReportMessage.runtimeException("Failed to find path: " + xPath, e);
 		}
 		if (nodes.getLength() > 1) {
-			ReportException.runtimeException("Expected one element for " + xPath + " got: " + nodes.getLength());
+			ReportMessage.runtimeException("Expected one element for " + xPath + " got: " + nodes.getLength());
 		}
 		if (nodes.getLength() == 0) {
 			try {
 				Node node = (Node)tokenPath.evaluate(xPath, doc, XPathConstants.NODE);
 				node.setTextContent(value);
 			} catch (XPathExpressionException e) {
-				ReportException.runtimeException("Failed to find path: " + xPath, e);
+				ReportMessage.runtimeException("Failed to find path: " + xPath, e);
 			}
 		}
 		nodes.item(0).setTextContent(value);
@@ -147,23 +166,27 @@ public class BaseConfiguration {
 	        StreamResult result = new StreamResult(new File(this.xmlFilePath));
 	        transformer.transform(source, result);
 		} catch (TransformerConfigurationException e) {
-			ReportException.runtimeException("Failed to save xml file!", e);
+			ReportMessage.runtimeException("Failed to save xml file!", e);
 		} catch (TransformerException e) {
-			ReportException.runtimeException("Failed to save xml file!", e);
+			ReportMessage.runtimeException("Failed to save xml file!", e);
 		}
 	}
 
 	protected String getElementValue(String xPath) {
-		XPath toeknPath = (XPath) XPathFactory.newInstance().newXPath();
+		return getElementValue(xPath, doc);
+	}
+	
+	public static String getElementValue(String xPath, Document doc) {
+		XPath tokenPath = (XPath) XPathFactory.newInstance().newXPath();
 		NodeList nodes = null;
 		try {
-			nodes = (NodeList)toeknPath.evaluate(xPath, doc, XPathConstants.NODE);
+			nodes = (NodeList)tokenPath.evaluate(xPath, doc, XPathConstants.NODE);
 		} catch (XPathExpressionException e) {
-			ReportException.errorMessageDefaultAction("Failed to find path: " + xPath, e);
+			ReportMessage.errorMessageDefaultAction("Failed to find path: " + xPath, e);
 			return "";
 		}
 		if (nodes.getLength() > 1) {
-			ReportException.errorMessageDefaultAction("Expected one element for " + xPath + " got: " + nodes.getLength());
+			ReportMessage.errorMessageDefaultAction("Expected one element for " + xPath + " got: " + nodes.getLength());
 		}
 		if (nodes.getLength() == 0) {
 			return "";
@@ -208,6 +231,10 @@ public class BaseConfiguration {
 		out.println(algodApi.getNodeStatus().toString());
 	}
 	
+	protected void register() {
+		// Should be implemented by the subclass
+	}
+	
 	public AlgodClientApi getAlgodClientApi() {
 		return algodApi;
 	}
@@ -216,4 +243,11 @@ public class BaseConfiguration {
 		return kmd;
 	}
 	
+	public TransactionID signAndSendTransaction(Transaction tx) {
+		return algodApi.sendTransaction(
+				kmd.signTransaction(tx));
+	}
+	
+	protected void publishArticle(String article) {
+	}
 }

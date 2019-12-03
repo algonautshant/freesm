@@ -1,28 +1,29 @@
 package freesm.publisher;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
-import freesm.api.BaseConfiguration;
+import com.algorand.algosdk.algod.client.model.TransactionID;
+import com.algorand.algosdk.transaction.Transaction;
+
+import freesm.api.Actions;
+import freesm.bot.BotActions;
 import freesm.utils.Utils;
 import freesm.utils.client.KmdClientApi;
-import freesm.utils.messaging.ReportException; 
+import freesm.utils.events.Request;
+import freesm.utils.messaging.ReportMessage; 
 
-public class PublisherConfiguration extends BaseConfiguration{
+public class PublisherActions extends Actions{
 
 	private String configFilePath;
 	
-	public PublisherConfiguration(String configFilePath) {
+	public PublisherActions(String configFilePath) {
 		super();
 		this.configFilePath = configFilePath;
 	}
 
 	public void init(PrintStream out, InputStream in ) {
-
 		super.init(out, in);
 		// Check for the wallet
 		String kmdAddress = this.getElementValue(KMD_NET);
@@ -38,7 +39,7 @@ public class PublisherConfiguration extends BaseConfiguration{
 			System.out.println("Enter wallet name:");
 			walletName = Utils.readInput(in, "Failed reading wallet name");
 			if (walletName.isEmpty()) {
-				ReportException.errorMessageDefaultAction("Try init again. Invalid wallet name.");
+				ReportMessage.errorMessageDefaultAction("Try init again. Invalid wallet name.");
 				return;
 			}
 		}
@@ -47,7 +48,7 @@ public class PublisherConfiguration extends BaseConfiguration{
 			System.out.println("Enter the password for wallet: " + walletName);
 			passwd = Utils.readInput(in, "Failed reading wallet password");
 			if (passwd.isEmpty()) {
-				ReportException.errorMessageDefaultAction("Try init again. Invalid wallet password.");
+				ReportMessage.errorMessageDefaultAction("Try init again. Invalid wallet password.");
 				return;
 			}
 		}
@@ -83,4 +84,45 @@ public class PublisherConfiguration extends BaseConfiguration{
 	public String getConfigFilePath() {
 		return configFilePath;
 	}
+	
+	protected void register() {
+		signAndSendTransaction(
+				algodApi.assetSendTransaction(10010, 
+						0, 
+						getAccountAddress(), 
+						getAccountAddress()));// accept asset transaction
+		signAndSendTransaction(
+				algodApi.assetSendTransaction(10012, 
+						0, 
+						getAccountAddress(), 
+						getAccountAddress()));// accept asset transaction
+		signAndSendTransaction(
+				algodApi.assetSendTransaction(10984, 
+						0, 
+						getAccountAddress(), 
+						getAccountAddress()));// accept asset transaction
+		
+		Transaction tx = algodApi.algoSendTransaction(
+				1000, 
+				this.getAccountAddress(), 
+				getBotAccountAddress("config.xml"));
+		tx.note = Request.requestRegisterAccount();
+		TransactionID tid = signAndSendTransaction(tx);
+		if (null != tid) {
+			tid.toString();
+		}
+	}
+	
+	protected void publishArticle(String article) {
+		String bot = BotActions.getBotAccountAddress("config.xml");
+		TransactionID  id  = signAndSendTransaction(
+				algodApi.assetSendTransaction(
+						10984, 
+						1,
+						getAccountAddress(),
+						bot,
+						Request.requestPublish(bot, article)));
+		ReportMessage.printMessage("Article \""  + article + "\" published: " + id.toString());
+	}
+
 }

@@ -35,4 +35,8 @@ public class BaseNodeEventListener implements NodeEventListener {
 		System.out.println(tx.toString());
 	}
 
+	public String getAddress() {
+		return "";
+	}
+
 }

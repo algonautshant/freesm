@@ -14,12 +14,10 @@ import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.algod.client.model.TransactionParams;
 import com.algorand.algosdk.crypto.Address;
 import com.algorand.algosdk.crypto.Digest;
-import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;
 import com.algorand.algosdk.transaction.Transaction.Type;
-import com.algorand.algosdk.util.Encoder;
 
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
 public class AlgodClientApi {
 	private AlgodApi algodApiInstance;
@@ -38,26 +36,97 @@ public class AlgodClientApi {
         algodApiInstance = new AlgodApi(algodClient);
 	}
 	
+	public Transaction algoSendTransaction (
+			long amount,
+			String fromAddress,
+			String toAddress) {
+
+		Transaction tx = this.getBlankTransaction();
+		try {
+			tx.sender = new Address(fromAddress);
+			tx.type = Type.Payment;
+			tx.receiver = new Address(toAddress);
+			tx.amount = BigInteger.valueOf(amount);
+		} catch (NoSuchAlgorithmException e) {
+			ReportMessage.errorMessageDefaultAction("Failed to get account from address.", e);
+			return null;
+		}
+		try {
+			com.algorand.algosdk.account.Account.setFeeByFeePerByte(tx, tx.fee);
+		} catch (NoSuchAlgorithmException e) {
+			ReportMessage.errorMessageDefaultAction("Failed to get the fee.", e);
+			return null;
+		}
+		return  tx;
+	}
+
+	public Transaction assetAcceptTransaction (
+			long assetId, 
+			String fromAddress) {
+		TransactionParams params = this.getTransactionParams();
+		try {
+			Transaction tx = Transaction.createAssetAcceptTransaction(
+					new Address(fromAddress),
+					params.getFee(),
+					params.getLastRound(),
+					BigInteger.valueOf(params.getLastRound().longValue()+1000),
+					null,
+					params.getGenesisID(),
+					new Digest(params.getGenesishashb64()),
+					BigInteger.valueOf(assetId));
+			com.algorand.algosdk.account.Account.setFeeByFeePerByte(tx, tx.fee);
+			return tx;
+		} catch (NoSuchAlgorithmException e) {
+			ReportMessage.errorMessageDefaultAction("Could not create address from: " + fromAddress, e);
+			return null;
+		}
+	}
+
 	public Transaction assetSendTransaction(
 			long assetId, 
 			long assets,
 			String fromAddress,
 			String toAddress) {
-		
-		Transaction tx = this.getBlankTransaction();
+		return assetSendTransaction(assetId, assets, fromAddress, toAddress, null);
+				
+	}
+	public Transaction assetSendTransaction(
+			long assetId, 
+			long assets,
+			String fromAddress,
+			String toAddress,
+			byte[]  note) {
+		TransactionParams params = this.getTransactionParams();
 		try {
-			tx.sender = new Address(fromAddress);
-			tx.type = Type.AssetTransfer;
-			tx.assetReceiver = new Address(toAddress);
-			tx.assetIndex = BigInteger.valueOf(assetId);
-			tx.assetCloseTo = new Address(fromAddress);
-			tx.assetAmount = BigInteger.valueOf(assets);
+			Transaction tx = Transaction.createAssetTransferTransaction(
+					new Address(fromAddress),
+					new Address(toAddress),
+					new Address(),
+					BigInteger.valueOf(assets),
+					params.getFee(),
+				params.getLastRound(),
+				BigInteger.valueOf(params.getLastRound().longValue()+1000),
+				note,
+				params.getGenesisID(),
+				new Digest(params.getGenesishashb64()),
+				BigInteger.valueOf(assetId));
+			com.algorand.algosdk.account.Account.setFeeByFeePerByte(tx, tx.fee);
+			return tx;
 		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			System.err.println("Failed to get account from address.");
+			ReportMessage.errorMessageDefaultAction("Could not create address from: " + fromAddress + " or : " + toAddress, e);
 			return null;
 		}
-		return  tx;
+	}
+	
+	
+	private TransactionParams getTransactionParams() {
+        TransactionParams params = null;
+		try {
+			params = algodApiInstance.transactionParams();
+		} catch (ApiException e1) {
+			ReportMessage.errorMessageDefaultAction("Failed to get transaction parameters.", e1);
+		}
+		return params;
 	}
 	
 	public Transaction getBlankTransaction() {
@@ -71,16 +140,14 @@ public class AlgodClientApi {
         BigInteger feePerByte = params.getFee();
         Digest genesisHash = new Digest(params.getGenesishashb64());
         String genesisID = params.getGenesisID();
-        System.out.println("Suggested Fee: " + feePerByte);
-        NodeStatus s;
+        NodeStatus status;
 		try {
-			s = algodApiInstance.getStatus();
+			status = algodApiInstance.getStatus();
 		} catch (ApiException e) {
-			e.printStackTrace();
-			throw new RuntimeException("Failed to get not status.");
+			ReportMessage.errorMessageDefaultAction("Failed to get not status.", e);
+			return null;
 		}
-        long firstRound = s.getLastRound().longValue();
-        System.out.println("Current Round: " + firstRound);
+        long firstRound = status.getLastRound().longValue();
 
         Transaction tx = new Transaction(
         		null, // sender
@@ -95,13 +162,12 @@ public class AlgodClientApi {
         return tx;
 	}
 	
-	public TransactionID sendTransaction(SignedTransaction signedTransaction) {
-        byte[] encodedTxBytes = Encoder.encodeToMsgPackNoException(signedTransaction);
+	public TransactionID sendTransaction(byte[] signedTransaction) {
         TransactionID id;
 		try {
-			id = algodApiInstance.rawTransaction(encodedTxBytes);
+			id = algodApiInstance.rawTransaction(signedTransaction);
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to submit raw transaction.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to submit raw transaction.", e);
 			return null;
 		}
         return id;
@@ -111,7 +177,7 @@ public class AlgodClientApi {
 		try {
 			return algodApiInstance.getStatus();
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to get node status.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to get node status.", e);
 			return null;
 		}
 	}
@@ -120,7 +186,7 @@ public class AlgodClientApi {
 		try {
 			return algodApiInstance.getBlock(BigInteger.valueOf(round));
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to get block: " + round, e);
+			ReportMessage.errorMessageDefaultAction("Failed to get block: " + round, e);
 			return null;
 		}
 	}
@@ -129,16 +195,8 @@ public class AlgodClientApi {
 		try {
 			return algodApiInstance.accountInformation(address);
 		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to get account information.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to get account information.", e);
 			return null;
 		}
-	}
-	
-	public void sendTransaction(byte[] signedTransactionBytes ) {
-		try {
-			algodApiInstance.rawTransaction(signedTransactionBytes);
-		} catch (ApiException e) {
-			ReportException.errorMessageDefaultAction("Failed to send transaction", e);
-		}
-	}
+	}	
 }

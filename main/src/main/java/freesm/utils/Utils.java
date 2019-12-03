@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
 public class Utils {
 
@@ -16,7 +16,7 @@ public class Utils {
 		try {
 			return br.readLine().trim();
 		} catch (IOException e) {
-			ReportException.errorMessageDefaultAction(errorMsg, e);
+			ReportMessage.errorMessageDefaultAction(errorMsg, e);
 			return "";
 		}
 	}

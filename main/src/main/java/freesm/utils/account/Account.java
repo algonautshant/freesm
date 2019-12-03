@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;
 
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
 public class Account {
 
@@ -23,7 +23,7 @@ public class Account {
 		try {
 			newAccount = new Account(mnemonic);
 		} catch (GeneralSecurityException e) {
-			ReportException.errorMessageDefaultAction("Failed to create account.", e);
+			ReportMessage.errorMessageDefaultAction("Failed to create account.", e);
 			return null;
 		}
 		return newAccount;
@@ -33,7 +33,7 @@ public class Account {
 		try {
 			return algoAccount.signTransactionWithFeePerByte(tx, tx.fee);
 		} catch (NoSuchAlgorithmException e) {
-			ReportException.errorMessageDefaultAction("Error signing the transaction.", e);
+			ReportMessage.errorMessageDefaultAction("Error signing the transaction.", e);
 			return null;
 		}
 	}

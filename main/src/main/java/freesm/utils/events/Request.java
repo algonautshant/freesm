@@ -1,6 +1,12 @@
 package freesm.utils.events;
 
 import java.nio.ByteBuffer;
+import java.security.NoSuchAlgorithmException;
+
+import com.algorand.algosdk.crypto.Address;
+import com.algorand.algosdk.util.Encoder;
+
+import freesm.utils.messaging.ReportMessage;
 
 public class Request {
 	
@@ -12,8 +18,18 @@ public class Request {
 		return RegisterAccount.getBytes();
 	}
 
-	public static byte[] requestPublish(String msg) {
-		ByteBuffer bf = ByteBuffer.allocate(1+msg.length());
+	public static byte[] requestPublish(String address, String msg) {
+		ByteBuffer bf = ByteBuffer.allocate(36+1+msg.length());
+		Address addr =  null;
+		try {
+			addr = new Address(address);
+		} catch (NoSuchAlgorithmException e) {
+			ReportMessage.errorMessageDefaultAction("Could not get address.", e);
+			return null;
+		}
+		byte  [] addressBytes = addr.getBytes();
+		assert(addressBytes.length == 32);
+		bf.put(addressBytes);
 		bf.put(Publish.getBytes());
 		bf.put(msg.getBytes());
 		return bf.array();

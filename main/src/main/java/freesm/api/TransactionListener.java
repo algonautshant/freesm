@@ -2,6 +2,7 @@ package freesm.api;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.algorand.algosdk.algod.client.model.Block;
 import com.algorand.algosdk.algod.client.model.NodeStatus;
@@ -44,7 +45,13 @@ public class TransactionListener extends Thread {
 		TransactionList transactions = block.getTxns();
 		for (Transaction tx : transactions.getTransactions()) {
 			for (NodeEventListener lsn : listeners) {
-				lsn.onNewTransaction(tx);
+				if  (tx.getPayment() != null &&
+						tx.getPayment().getTo().contentEquals(lsn.getAddress())) {
+					lsn.onNewTransaction(tx);
+				} else if  (tx.getType().contentEquals("axfer"))  {
+					lsn.onNewTransaction(tx);
+				}
+				
 			}
 		}
 	}

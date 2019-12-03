@@ -7,14 +7,14 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
-import freesm.api.BaseConfiguration;
+import freesm.api.Actions;
 import freesm.utils.client.KmdClientApi;
-import freesm.utils.messaging.ReportException;
+import freesm.utils.messaging.ReportMessage;
 
-public class BotConfiguration extends BaseConfiguration {
+public class BotActions extends Actions {
 	private String configFilePath;
 	
-	public BotConfiguration(String configFilePath) {
+	public BotActions(String configFilePath) {
 		super();
 		this.configFilePath = configFilePath;
 	}
@@ -45,7 +45,7 @@ public class BotConfiguration extends BaseConfiguration {
 			try {
 				passwd = br.readLine();
 			} catch (IOException e) {
-				ReportException.errorMessageDefaultAction("Failed to read password.", e);
+				ReportMessage.errorMessageDefaultAction("Failed to read password.", e);
 				return;
 			}
 			String id = kmd.createWallet();

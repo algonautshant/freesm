@@ -4,6 +4,8 @@ import com.algorand.algosdk.algod.client.model.Transaction;
 
 public interface NodeEventListener {
 	
+	public String getAddress();
+	
 	public void onRegisterRequest();
 		
 	public void onPublishRequest();
