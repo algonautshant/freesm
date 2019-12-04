@@ -63,7 +63,9 @@ public class BotReactions implements NodeEventListener{
 		} else if (tx.getNoteb64() != null &&
 				Arrays.equals(tx.getNoteb64(), 0, 32, botAddress, 0, 32))  {
 			String article = new String(Arrays.copyOfRange(tx.getNoteb64(),  33, tx.getNoteb64().length));
-			ReportMessage.printMessage("Article  recieved: "  + article);
+			ReportMessage.printMessage("Article  recieved: "  + article +"\n"
+					+ "From: " + tx.getFrom() + "\n"
+							+ "tId: "  + tx.getTx());
 		}
 					
 		

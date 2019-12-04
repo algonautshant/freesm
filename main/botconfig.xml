@@ -11,7 +11,7 @@
 
 		<wallet>
 			<name>botwallet</name>
-			<pasword>botwallet</pasword>
+			<password>botwallet</password>
 
 			<kmd>
 				<net>127.0.0.1:7833</net>

@@ -11,7 +11,7 @@
 
 		<wallet>
 			<name>user1wallet</name>
-			<pasword>user1wallet</pasword>
+			<password>user1wallet</password>
 
 			<kmd>
 				<net>127.0.0.1:65057</net>

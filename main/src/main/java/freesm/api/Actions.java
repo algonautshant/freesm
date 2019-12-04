@@ -24,6 +24,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -48,7 +49,7 @@ public class Actions {
 	protected static String NODE_TOKEN = "/freesm/Node/algod/token";
 	
 	protected static String WALLET_NAME = "/freesm/Node/wallet/name";
-	protected static String WALLET_PASSWORD = "/freesm/Node/wallet/pasword";
+	protected static String WALLET_PASSWORD = "/freesm/Node/wallet/password";
 
 	protected static String KMD_NET = "/freesm/Node/wallet/kmd/net";
 	protected static String KMD_TOKEN = "/freesm/Node/wallet/kmd/token";
@@ -82,7 +83,7 @@ public class Actions {
 		} catch (SAXException e) {
 			ReportMessage.errorMessageDefaultAction("Failed to parse configuration xml file", e);			
 		} catch (IOException e) {
-			ReportMessage.errorMessageDefaultAction("Failed to read configuration xml file: " + xmlFile, e);
+//			ReportMessage.errorMessageDefaultAction("Failed to read configuration xml file: " + xmlFile, e);
 		} 
 		return null;
 	}
@@ -90,11 +91,18 @@ public class Actions {
 	private void loadXml(String filePath) throws IOException {
 		xmlFilePath = filePath;
 		doc = loadXmlFile(filePath);
+		if (null == doc) {
+			doc = createXmlConfigDocument();
+			saveDocument();
+		}
 	}
 	
 	protected void updateNodeParameters() {
 		// Update the url, port, token:
 		String nodePath = this.getElementValue(NODE_PATH);
+		if  (nodePath.isEmpty()) {
+			ReportMessage.runtimeException("/freesm/Node/path should be set in the configuration xml.\nBye.");
+		}
 		String kmdPath = nodePath + "/" + "kmd-v0.5";
 		String algodNetP = nodePath + "/" + "algod.net";
 		String algodTokenP = nodePath + "/" + "algod.token";
@@ -249,5 +257,38 @@ public class Actions {
 	}
 	
 	protected void publishArticle(String article) {
+	}
+
+	private Document createXmlConfigDocument() {
+		DocumentBuilderFactory dbFactory =
+				DocumentBuilderFactory.newInstance();
+		DocumentBuilder dBuilder = null;
+		try {
+			dBuilder = dbFactory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			ReportMessage.runtimeException("Can't create docuemnt.", e);
+		}
+		Document doc = dBuilder.newDocument();
+
+		Element freesm = doc.createElement("freesm");
+		doc.appendChild(freesm);
+		Element Node = doc.createElement("Node");
+		freesm.appendChild(Node);
+		Node.appendChild(doc.createElement("path"));
+		Element algod = doc.createElement("algod");
+		Node.appendChild(algod);
+		algod.appendChild(doc.createElement("net"));
+		algod.appendChild(doc.createElement("token"));
+		Element wallet = doc.createElement("wallet");
+		Node.appendChild(wallet);
+		wallet.appendChild(doc.createElement("name"));
+		wallet.appendChild(doc.createElement("password"));
+		Element kmd = doc.createElement("kmd");
+		wallet.appendChild(kmd);
+		kmd.appendChild(doc.createElement("net"));
+		kmd.appendChild(doc.createElement("token"));
+		wallet.appendChild(doc.createElement("address"));
+		freesm.appendChild(doc.createElement("address"));
+		return doc;
 	}
 }
