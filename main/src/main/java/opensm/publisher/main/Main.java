@@ -1,11 +1,11 @@
-package freesm.publisher.main;
+package opensm.publisher.main;
 
-import freesm.api.CmdLoop;
-import freesm.bot.BotActions;
-import freesm.bot.BotReactions;
-import freesm.publisher.PublisherReactions;
-import freesm.publisher.PublisherActions;
-import freesm.utils.messaging.ReportMessage;
+import opensm.api.CmdLoop;
+import opensm.bot.BotActions;
+import opensm.bot.BotReactions;
+import opensm.publisher.PublisherActions;
+import opensm.publisher.PublisherReactions;
+import opensm.utils.messaging.ReportMessage;
 
 public class Main {
 

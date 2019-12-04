@@ -1,4 +1,4 @@
-package freesm.utils.client;
+package opensm.utils.client;
 
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +17,7 @@ import com.algorand.algosdk.crypto.Digest;
 import com.algorand.algosdk.transaction.Transaction;
 import com.algorand.algosdk.transaction.Transaction.Type;
 
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.messaging.ReportMessage;
 
 public class AlgodClientApi {
 	private AlgodApi algodApiInstance;

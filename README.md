@@ -1,1 +1,1 @@
-# freesm
+# opensm

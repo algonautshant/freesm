@@ -1,4 +1,4 @@
-package freesm.utils.client;
+package opensm.utils.client;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import com.algorand.algosdk.kmd.client.model.SignTransactionRequest;
 import com.algorand.algosdk.transaction.Transaction;
 import com.algorand.algosdk.util.Encoder;
 
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.messaging.ReportMessage;
 
 public class KmdClientApi {
 

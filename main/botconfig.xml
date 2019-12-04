@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><freesm>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><opensm>
 	<Node>
 		<path>
 			/Users/shantkarakashian/node/testnetdata/BotNode
@@ -23,4 +23,4 @@
 		</wallet>
 	</Node>
 	<address>EP3ATDLS6G6AESZHKOFW74PJW7FLHLGI5DA6LQBE42TEY5EJDPNQM3JNUU</address>
-</freesm>
+</opensm>

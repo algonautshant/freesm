@@ -1,4 +1,4 @@
-package freesm.utils.account;
+package opensm.utils.account;
 
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import com.algorand.algosdk.transaction.SignedTransaction;
 import com.algorand.algosdk.transaction.Transaction;
 
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.messaging.ReportMessage;
 
 public class Account {
 

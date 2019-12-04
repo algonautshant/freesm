@@ -1,13 +1,13 @@
-package freesm.publisher;
+package opensm.publisher;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import com.algorand.algosdk.crypto.Address;
 
-import freesm.bot.BotActions;
-import freesm.utils.events.NodeEventListener;
-import freesm.utils.messaging.ReportMessage;
+import opensm.bot.BotActions;
+import opensm.utils.events.NodeEventListener;
+import opensm.utils.messaging.ReportMessage;
 
 public class PublisherReactions implements NodeEventListener {
 	private  PublisherActions  publisherConfig;

@@ -1,8 +1,8 @@
-package freesm.api;
+package opensm.api;
 
 import com.algorand.algosdk.algod.client.model.Transaction;
 
-import freesm.utils.events.NodeEventListener;
+import opensm.utils.events.NodeEventListener;
 
 public class BaseNodeEventListener implements NodeEventListener {
 

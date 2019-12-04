@@ -1,4 +1,4 @@
-package freesm.main;
+package opensm.main;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

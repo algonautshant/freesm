@@ -1,4 +1,4 @@
-package freesm.bot;
+package opensm.bot;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.List;
 
-import freesm.api.Actions;
-import freesm.utils.client.KmdClientApi;
-import freesm.utils.messaging.ReportMessage;
+import opensm.api.Actions;
+import opensm.utils.client.KmdClientApi;
+import opensm.utils.messaging.ReportMessage;
 
 public class BotActions extends Actions {
 	private String configFilePath;

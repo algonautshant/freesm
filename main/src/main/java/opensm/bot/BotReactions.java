@@ -1,4 +1,4 @@
-package freesm.bot;
+package opensm.bot;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -6,11 +6,11 @@ import java.util.Arrays;
 import com.algorand.algosdk.algod.client.model.Transaction;
 import com.algorand.algosdk.crypto.Address;
 
-import freesm.utils.account.Account;
-import freesm.utils.client.AlgodClientApi;
-import freesm.utils.events.NodeEventListener;
-import freesm.utils.events.Request;
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.account.Account;
+import opensm.utils.client.AlgodClientApi;
+import opensm.utils.events.NodeEventListener;
+import opensm.utils.events.Request;
+import opensm.utils.messaging.ReportMessage;
 
 public class BotReactions implements NodeEventListener{
 	

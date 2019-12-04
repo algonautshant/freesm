@@ -1,4 +1,4 @@
-package freesm.publisher;
+package opensm.publisher;
 
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -7,12 +7,12 @@ import java.util.List;
 import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.transaction.Transaction;
 
-import freesm.api.Actions;
-import freesm.bot.BotActions;
-import freesm.utils.Utils;
-import freesm.utils.client.KmdClientApi;
-import freesm.utils.events.Request;
-import freesm.utils.messaging.ReportMessage; 
+import opensm.api.Actions;
+import opensm.bot.BotActions;
+import opensm.utils.Utils;
+import opensm.utils.client.KmdClientApi;
+import opensm.utils.events.Request;
+import opensm.utils.messaging.ReportMessage; 
 
 public class PublisherActions extends Actions{
 

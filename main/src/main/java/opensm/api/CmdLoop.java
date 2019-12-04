@@ -1,4 +1,4 @@
-package freesm.api;
+package opensm.api;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,12 +6,12 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
-import freesm.utils.events.NodeEventListener;
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.events.NodeEventListener;
+import opensm.utils.messaging.ReportMessage;
 
 public class CmdLoop {
 
-	private static String header = "FreeSM Bot\n"
+	private static String header = "openSM Bot\n"
 			+ "Commands: \n"
 			+ "	init              // loads configuration, runs checks and initializes fsmbot\n"
 			+ "	startlistening    // start listening to transaciton and processes requests\n"

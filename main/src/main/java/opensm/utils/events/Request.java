@@ -1,4 +1,4 @@
-package freesm.utils.events;
+package opensm.utils.events;
 
 import java.nio.ByteBuffer;
 import java.security.NoSuchAlgorithmException;
@@ -6,7 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import com.algorand.algosdk.crypto.Address;
 import com.algorand.algosdk.util.Encoder;
 
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.messaging.ReportMessage;
 
 public class Request {
 	

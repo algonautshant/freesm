@@ -1,4 +1,4 @@
-package freesm.api;
+package opensm.api;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -9,8 +9,8 @@ import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.Transaction;
 import com.algorand.algosdk.algod.client.model.TransactionList;
 
-import freesm.utils.client.AlgodClientApi;
-import freesm.utils.events.NodeEventListener;
+import opensm.utils.client.AlgodClientApi;
+import opensm.utils.events.NodeEventListener;
 
 public class TransactionListener extends Thread {
 	

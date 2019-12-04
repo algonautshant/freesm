@@ -1,4 +1,4 @@
-package freesm.utils.messaging;
+package opensm.utils.messaging;
 
 public class ReportMessage {
 

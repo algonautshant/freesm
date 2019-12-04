@@ -1,8 +1,8 @@
-package freesm.bot.main;
+package opensm.bot.main;
 
-import freesm.api.CmdLoop;
-import freesm.bot.BotActions;
-import freesm.bot.BotReactions;
+import opensm.api.CmdLoop;
+import opensm.bot.BotActions;
+import opensm.bot.BotReactions;
 
 public class Main {
 

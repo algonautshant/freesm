@@ -1,4 +1,4 @@
-package freesm.utils.events;
+package opensm.utils.events;
 
 import com.algorand.algosdk.algod.client.model.Transaction;
 

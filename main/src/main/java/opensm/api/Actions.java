@@ -1,4 +1,4 @@
-package freesm.api;
+package opensm.api;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,9 +32,9 @@ import org.xml.sax.SAXException;
 import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.transaction.Transaction;
 
-import freesm.utils.client.AlgodClientApi;
-import freesm.utils.client.KmdClientApi;
-import freesm.utils.messaging.ReportMessage;
+import opensm.utils.client.AlgodClientApi;
+import opensm.utils.client.KmdClientApi;
+import opensm.utils.messaging.ReportMessage;
 
 public class Actions {
 	
@@ -44,18 +44,18 @@ public class Actions {
 	protected AlgodClientApi algodApi;
 	protected KmdClientApi kmd;
 	
-	protected static String NODE_PATH = "/freesm/Node/path";
-	protected static String NODE_NET = "/freesm/Node/algod/net";
-	protected static String NODE_TOKEN = "/freesm/Node/algod/token";
+	protected static String NODE_PATH = "/opensm/Node/path";
+	protected static String NODE_NET = "/opensm/Node/algod/net";
+	protected static String NODE_TOKEN = "/opensm/Node/algod/token";
 	
-	protected static String WALLET_NAME = "/freesm/Node/wallet/name";
-	protected static String WALLET_PASSWORD = "/freesm/Node/wallet/password";
+	protected static String WALLET_NAME = "/opensm/Node/wallet/name";
+	protected static String WALLET_PASSWORD = "/opensm/Node/wallet/password";
 
-	protected static String KMD_NET = "/freesm/Node/wallet/kmd/net";
-	protected static String KMD_TOKEN = "/freesm/Node/wallet/kmd/token";
+	protected static String KMD_NET = "/opensm/Node/wallet/kmd/net";
+	protected static String KMD_TOKEN = "/opensm/Node/wallet/kmd/token";
 
 	
-	protected static String ADDRESS = "/freesm/address";
+	protected static String ADDRESS = "/opensm/address";
 	
 	public Actions() {
 	}
@@ -101,7 +101,7 @@ public class Actions {
 		// Update the url, port, token:
 		String nodePath = this.getElementValue(NODE_PATH);
 		if  (nodePath.isEmpty()) {
-			ReportMessage.runtimeException("/freesm/Node/path should be set in the configuration xml.\nBye.");
+			ReportMessage.runtimeException("/opensm/Node/path should be set in the configuration xml.\nBye.");
 		}
 		String kmdPath = nodePath + "/" + "kmd-v0.5";
 		String algodNetP = nodePath + "/" + "algod.net";
@@ -270,10 +270,10 @@ public class Actions {
 		}
 		Document doc = dBuilder.newDocument();
 
-		Element freesm = doc.createElement("freesm");
-		doc.appendChild(freesm);
+		Element opensm = doc.createElement("opensm");
+		doc.appendChild(opensm);
 		Element Node = doc.createElement("Node");
-		freesm.appendChild(Node);
+		opensm.appendChild(Node);
 		Node.appendChild(doc.createElement("path"));
 		Element algod = doc.createElement("algod");
 		Node.appendChild(algod);
@@ -288,7 +288,7 @@ public class Actions {
 		kmd.appendChild(doc.createElement("net"));
 		kmd.appendChild(doc.createElement("token"));
 		wallet.appendChild(doc.createElement("address"));
-		freesm.appendChild(doc.createElement("address"));
+		opensm.appendChild(doc.createElement("address"));
 		return doc;
 	}
 }
