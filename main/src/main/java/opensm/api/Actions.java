@@ -65,7 +65,7 @@ public class Actions {
 		if (null != doc) {
 			return getElementValue(ADDRESS, doc);
 		}
-		return "";
+		return null;
 	}
 	
 	public String getAccountAddress() {
