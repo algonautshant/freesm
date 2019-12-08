@@ -29,6 +29,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.TransactionID;
 import com.algorand.algosdk.transaction.Transaction;
 
@@ -137,7 +138,7 @@ public class Actions {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			ReportMessage.runtimeException("Failed to read file: " + filepath, e);
 			return "";
 		}
 	}
@@ -236,7 +237,12 @@ public class Actions {
 		out.println("Address: " + address);
 		out.println("Token: " + token);
 		algodApi = new AlgodClientApi(address, token); 
-		out.println(algodApi.getNodeStatus().toString());
+		NodeStatus ns = algodApi != null ? 
+				(algodApi.getNodeStatus() != null ? algodApi.getNodeStatus() : null) 
+				: null;
+		if (ns != null) {
+			out.println(ns.toString());
+		}
 	}
 	
 	protected void register() {

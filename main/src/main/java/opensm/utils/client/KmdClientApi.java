@@ -72,6 +72,9 @@ public class KmdClientApi {
 	
 	public String getWalletHandle() {
 		List<APIV1Wallet> wList = getWalletList();
+		if (wList == null) {
+			return null;
+		}
 		String walletId = "";
 		for (APIV1Wallet w : wList) {
 			if (walletName.contentEquals(w.getName())) {
@@ -123,7 +126,7 @@ public class KmdClientApi {
 		try {
 			list = kmdApiInstance.listWallets().getWallets();
 		} catch (ApiException e) {
-			ReportMessage.errorMessageDefaultAction("Failed to get the wallet list from kmd.", e);
+			ReportMessage.runtimeException("Failed to get the wallet list from kmd.", e);
 			return null;
 		}
 		return list;

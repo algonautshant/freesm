@@ -16,7 +16,8 @@ public class PublisherReactions implements NodeEventListener {
 		this.publisherConfig = publisherConfig;
 		String botaddrstr = BotActions.getBotAccountAddress("config.xml");
 		if (null == botaddrstr) {
-			ReportMessage.runtimeException("Could not find config.xml file with bot address.");
+			ReportMessage.runtimeException("Could not find config.xml file with bot address in: " + 
+					System.getProperty("user.dir"));
 		}
 		Address botaddr =  null;
 		try {

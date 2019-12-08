@@ -71,14 +71,13 @@ public class PublisherActions extends Actions{
 			kmd.generateKey();
 			addresses = kmd.getAddressesInWallet();
 		}
+		if (addresses == null) {
+			return;
+		}
 		for (String addr : addresses) {
 			out.println(algodApi.getAccountInformation(addr));
 		}		
-		setElementValue(ADDRESS, addresses.get(0));
-		
-		//  Accept the assets if not accepted yet
-		// TODO
-		
+		setElementValue(ADDRESS, addresses.get(0));		
 	}
 	
 	public String getConfigFilePath() {
