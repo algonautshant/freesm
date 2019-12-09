@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><opensm>
+	<Node>
+		<path>
+			/Users/shantkarakashian/node/testnetdata/Node
+		</path>
+
+		<algod>
+			<net></net>
+			<token></token>
+		</algod>
+
+		<wallet>
+			<name></name>
+			<password></password>
+
+			<kmd>
+				<net></net>
+				<token></token>
+			</kmd>
+			<address>
+			</address>
+
+		</wallet>
+	</Node>
+	<address></address>
+</opensm>
