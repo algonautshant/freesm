@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.security.NoSuchAlgorithmException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import com.algorand.algosdk.algod.client.model.NodeStatus;
 import com.algorand.algosdk.algod.client.model.TransactionID;
+import com.algorand.algosdk.crypto.Address;
 import com.algorand.algosdk.transaction.Transaction;
 
 import opensm.utils.client.AlgodClientApi;
@@ -63,10 +65,20 @@ public class Actions {
 	
 	public static String getBotAccountAddress(String configFile) {
 		Document doc = loadXmlFile(configFile);
+		String botaddrstr = "";
 		if (null != doc) {
-			return getElementValue(ADDRESS, doc);
+			botaddrstr = getElementValue(ADDRESS, doc);
 		}
-		return null;
+		if (botaddrstr.isEmpty()) {
+			ReportMessage.runtimeException("Could not find " + configFile + " file with bot address in: " + 
+					System.getProperty("user.dir"));
+		}
+		try {
+			new Address(botaddrstr);
+		} catch (NoSuchAlgorithmException e) {
+			ReportMessage.runtimeException("No valid bot address in " + configFile, e);
+		}
+		return botaddrstr;
 	}
 	
 	public String getAccountAddress() {

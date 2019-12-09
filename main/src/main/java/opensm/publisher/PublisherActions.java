@@ -48,8 +48,7 @@ public class PublisherActions extends Actions{
 			System.out.println("Enter the password for wallet: " + walletName);
 			passwd = Utils.readInput(in, "Failed reading wallet password");
 			if (passwd.isEmpty()) {
-				ReportMessage.errorMessageDefaultAction("Try init again. Invalid wallet password.");
-				return;
+				ReportMessage.errorMessageDefaultAction("No password set for wallet: " + walletName);
 			}
 		}
 		kmd = new KmdClientApi(kmdAddress, kmdToken, walletName, passwd);
